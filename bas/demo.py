@@ -8,9 +8,7 @@
 # @Software: PyCharm
 
 from bas.rbas import RBAS
-
-
-from bas.rbas import RBAS
+import math
 import numpy as np
 
 
@@ -22,12 +20,21 @@ import numpy as np
 
 def fun(vars):
     # 评价函数
-    x, y = vars
-    # if 0 <= x <= 2 * np.pi and 0 <= y <= 2 * np.pi:
-    return -np.cos(x) - np.sin(y) + 10
-    # else:
-    #     return -10  # 返回一个达不到的小值
+    # x, y = vars
+    x = np.array(range(0, 11))
+    x[0:11] = vars
+    if 0 <= x.any() <= 10:
+    # return -np.cos(x) - np.sin(y) + 10
+        fitness = 0
+        for i in range(0, 10):
+            fitness += math.sqrt(pow(x[i+1] - x[i], 2) + 1)
+        return fitness
 
-bas = RBAS(fitness_function=fun, dim=2)
+    else:
+        return 1000  # 返回一个达不到的小/大值
+
+
+bas = RBAS(fitness_function=fun, dim=11, steps=11100, eta=0.9997,
+           bound=[0, 10], step0=3, fitness_value=np.inf)
 bas.run()
 print(bas.gbest)

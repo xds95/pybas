@@ -44,7 +44,7 @@ class RBASEngine(BASEngine):
         xright = self.chromosome - dir * d0
         fright = self.fitness_function(xright)
 
-        if self.fitness() > self.gbest.fitness_value:
+        if self.fitness() < self.gbest.fitness_value:
             self.gbest = deepcopy(self)
             self.chromosome -= self.step * dir * np.sign(-fleft + fright)
         else:
@@ -54,5 +54,6 @@ class RBASEngine(BASEngine):
                 self.chromosome -= self.step * dir * np.sign(-fleft + fright)
 
         self.step *= self.eta
+
 
 RBAS = RBASEngine
