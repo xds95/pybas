@@ -54,6 +54,7 @@ class RBASEngine(BASEngine):
                 self.chromosome -= self.step * dir * np.sign(-fleft + fright)
 
         self.step *= self.eta
+        1
 
 
 RBAS = RBASEngine
