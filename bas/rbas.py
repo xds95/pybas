@@ -46,12 +46,16 @@ class RBASEngine(BASEngine):
 
         if self.fitness() < self.gbest.fitness_value:
             self.gbest = deepcopy(self)
-            self.chromosome -= self.step * dir * np.sign(-fleft + fright)
-        else:
+
+        self.chromosome -= self.step * dir * np.sign(-fleft + fright)
+            '''
+                    else:
             if npr.rand() < self.step:
                 self.chromosome -= self.step * dir * np.sign(fleft - fright)
             else:
                 self.chromosome -= self.step * dir * np.sign(-fleft + fright)
+
+            '''
 
         self.step *= self.eta
 
