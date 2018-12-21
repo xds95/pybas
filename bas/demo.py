@@ -21,7 +21,8 @@ import numpy as np
 def fun(vars):
     # 评价函数
     # x, y = vars
-    x = np.array(range(0, 11))
+    # x = np.array(range(0, 11))
+    x = np.random.rand(11)
     x[0:11] = vars
     if 0 <= x.any() <= 10:
     # return -np.cos(x) - np.sin(y) + 10
@@ -34,7 +35,7 @@ def fun(vars):
         return 1000  # 返回一个达不到的小/大值
 
 
-bas = RBAS(fitness_function=fun, dim=11, steps=11100, eta=0.9997,
+bas = RBAS(fitness_function=fun, dim=11, steps=1000, eta=0.997,
            bound=[0, 10], step0=3, fitness_value=np.inf)
 bas.run()
 print(bas.gbest)
