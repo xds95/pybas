@@ -18,7 +18,7 @@ npr = np.random
 class RBASEngine(BASEngine):
     def __init__(self, steps=100, eps=0.01, chromosome=None, dim=2, bound=None, fitness_function=None, *,
                  fitness_value=-np.inf, init_method='random', step0=1, c=5, eta=0.95, po_st=18, po_en=18,
-                 **kwargs):
+                 map_Can=None, **kwargs):
         """
         :param steps: 迭代次数
         :param eps: 精度
@@ -32,29 +32,31 @@ class RBASEngine(BASEngine):
         :param c:
         :param eta:
         :param kwargs:
+        :param map_Can:地图信息
         """
         super().__init__(steps, eps, chromosome, dim, bound, fitness_function, fitness_value=fitness_value,
                          init_method=init_method, step0=step0, c=c, eta=eta, po_st=po_st, po_en=po_en,
-                         **kwargs)
+                         map_Can=map_Can, **kwargs)
 
     def update(self, *args, **kwargs):
         d0 = self.step / self.c
         dir = npr.rand(self.dim) - 1
         dir = dir / (self.eps + np.linalg.norm(dir))
         xleft = self.chromosome + dir * d0
-        fleft = self.fitness_function(xleft, self.dim, po_st=self.po_st, po_en=self.po_en)
+        fleft = self.fitness_function(xleft, self.dim, po_st=self.po_st, po_en=self.po_en, map_Can=self.map_Can)
         xright = self.chromosome - dir * d0
-        fright = self.fitness_function(xright, self.dim, po_st=self.po_st, po_en=self.po_en)
+        fright = self.fitness_function(xright, self.dim, po_st=self.po_st, po_en=self.po_en, map_Can=self.map_Can)
 
         if self.fitness() < self.gbest.fitness_value:
             self.gbest = deepcopy(self)
-            self.chromosome += self.step * dir * np.sign(-fleft + fright)
-        else:
-            if self.step * npr.rand() < self.step :
-                self.chromosome -= self.step * dir * np.sign(fleft - fright)
-            else:
-                self.chromosome -= self.step * dir * np.sign(-fleft + fright)
+        self.chromosome -= self.step * dir * np.sign(fleft - fright)
+        # else:
+        #     if self.step * npr.rand() < self.step:
+        #         self.chromosome -= self.step * dir * np.sign(fleft - fright)
+        #     else:
+        #         self.chromosome -= self.step * dir * np.sign(-fleft + fright)
 
         self.step *= self.eta
+
 
 RBAS = RBASEngine
