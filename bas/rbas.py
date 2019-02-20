@@ -40,7 +40,7 @@ class RBASEngine(BASEngine):
 
     def update(self, *args, **kwargs):
         d0 = self.step / self.c
-        dir = npr.rand(self.dim) - 1
+        dir = npr.rand(self.dim) - 0.5
         dir = dir / (self.eps + np.linalg.norm(dir))
         xleft = self.chromosome + dir * d0
         fleft = self.fitness_function(xleft, self.dim, po_st=self.po_st, po_en=self.po_en, map_Can=self.map_Can)
