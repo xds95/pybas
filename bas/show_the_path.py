@@ -34,9 +34,9 @@ class ShowThePath(object):
         :2D实验中：我们获得一条路径，其y步进，z固定，只有x在进行规划
         :3D实验中：获得一组数据点g.best,编码方式可以为X1Y1Z1...XnYnZn,或者X1X2...Zn-1Zn
         """
-        self.path_x = (self.path_point * 100 / 36).astype(np.int)
-        self.path_y = np.arange(0, 100, 100 / 30, dtype='uint8').transpose()
-        self.path_z = np.arange(79, 80, 1 / 30, dtype='uint8').transpose()
+        self.path_x = (self.path_point/5).astype(np.int)
+        self.path_y = np.arange(0, 100, 100 / bas.dim, dtype='uint8').transpose()
+        self.path_z = np.arange(179, 180, 1 / bas.dim, dtype='uint8').transpose()
 
     def show_map(self):
         """

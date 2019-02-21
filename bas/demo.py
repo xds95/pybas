@@ -32,26 +32,27 @@ def fun(chromosome, dim=None, *, po_st=None, po_en=None, map_Can=None):
     # 添加障碍物是否碰撞的判断
     y = np.random.rand(dim)
     y[0:dim] = chromosome
-    if all(y >= 0) and all(y <= 20):
+    length_y = pow(500 / dim, 2)
+    if all(y >= 0) and all(y <= 500):
         fitness = math.sqrt(pow(y[0] - po_st, 2) + 1)
         for i in range(0, dim):
-            pos_ceil = np.ceil(y[i]*500/dim).astype(int)
-            pos_floor = np.floor(y[i]*500/dim).astype(int)
-            if map_Can[pos_ceil, np.ceil(i*500/dim).astype(int)] > 280 or \
-                    map_Can[pos_floor, np.floor(i*500/dim).astype(int)] > 280:
-            # if map_Can[i, pos_ceil] > 60 or map_Can[i, pos_floor] > 60:
-                fitness += 50
+            # pos_ceil = np.ceil(y[i]).astype(int)
+            # pos_floor = np.floor(y[i]).astype(int)
+            # if map_Can[pos_ceil, np.ceil(i*500/dim).astype(int)] > 80 or \
+            #         map_Can[pos_floor, np.floor(i*500/dim).astype(int)] > 80:
+            if map_Can[i*500//dim, y[i].astype(int)] > 100:
+                fitness += 500
 
             if i == 0:
-                fitness += math.sqrt(pow(y[i] - po_st, 2) + 1)
+                fitness += math.sqrt(pow(y[i] - po_st, 2) + length_y)
             elif i == dim-1:
-                fitness += math.sqrt(pow(po_en - y[dim-1], 2) + 1)
+                fitness += math.sqrt(pow(po_en - y[dim-1], 2) + length_y)
             else:
-                fitness += math.sqrt(pow(y[i] - y[i-1], 2) + 1)
+                fitness += math.sqrt(pow(y[i] - y[i-1], 2) + length_y)
         return fitness
     else:
         # 边界限制
-        c = 50 + sum(0 < i < 20 for i in y) * 10
+        c = 50 + sum(0 < i < 500 for i in y) * 500
         return c  # 返回一个达不到的小/大值
 
 
@@ -59,8 +60,8 @@ def fun(chromosome, dim=None, *, po_st=None, po_en=None, map_Can=None):
 map_id = 1
 map_Can = np.loadtxt('/Users/xds/PycharmProjects/pybas/map'
                      '/scenario_a%s/map.txt' % map_id, dtype=int)
-bas = RBAS(fitness_function=fun, dim=30, steps=999, eta=0.9976, bound=[5, 20],
-           step0=2, fitness_value=np.inf, po_st=10, po_en=10, map_Can=map_Can)
+bas = RBAS(fitness_function=fun, dim=20, steps=400, eta=0.9976, bound=[100, 500],
+           step0=25, fitness_value=np.inf, po_st=400, po_en=400, map_Can=map_Can)
 bas.run()
 print(bas.gbest)
 
