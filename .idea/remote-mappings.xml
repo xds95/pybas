@@ -3,13 +3,8 @@
   <component name="RemoteMappingsManager">
     <list>
       <list>
-        <remote-mappings server-id="python@sftp://xds@coyote:22/home/xds/anaconda3/bin/python3">
-          <settings>
-            <list>
-              <mapping local-root="$PROJECT_DIR$" remote-root="/home/xds/tmp/pycharm_project_310" />
-            </list>
-          </settings>
-        </remote-mappings>
+        <remote-mappings server-id="python@sftp://xds@coyote:22/home/xds/anaconda3/bin/python3" />
+        <remote-mappings server-id="python@sftp://xds@coyote:22/home/xds/tmp/vitural_python35/env_pybas/bin/python3" />
       </list>
     </list>
   </component>

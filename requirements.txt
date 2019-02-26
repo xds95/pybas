@@ -1,2 +1,6 @@
 snowland-algorithm==0.0.7
 numpy>=1.0.0
+plotly
+math
+numpy
+pybas>=0.0.1

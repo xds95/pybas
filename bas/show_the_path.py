@@ -29,14 +29,24 @@ class ShowThePath(object):
         :param bas: 包含了已经规划好的一切信息
         """
         self.map_id = map_id
-        self.path_point = bas.gbest.chromosome
+        self.path_point = bas.gbest_chromosome
+        self.path_x = []
+        self.path_y = []
+        self.path_z = []
         """
         :2D实验中：我们获得一条路径，其y步进，z固定，只有x在进行规划
         :3D实验中：获得一组数据点g.best,编码方式可以为X1Y1Z1...XnYnZn,或者X1X2...Zn-1Zn
         """
-        self.path_x = (self.path_point/5).astype(np.int)
-        self.path_y = np.arange(0, 100, 100 / bas.dim, dtype='uint8').transpose()
-        self.path_z = np.arange(179, 180, 1 / bas.dim, dtype='uint8').transpose()
+        for i in range(len(self.path_point)):
+            if i%3 == 0:
+                self.path_x.append(self.path_point[i].astype(np.int))
+            elif (i-1)%3 == 0:
+                self.path_y.append(self.path_point[i].astype(np.int))
+            else:
+                self.path_z.append(self.path_point[i].astype(np.int))
+        # self.path_x = (self.path_point/5).astype(np.int)
+        # self.path_y = np.arange(0, 100, 100 / bas.dim, dtype='uint8').transpose()
+        # self.path_z = np.arange(179, 180, 1 / bas.dim, dtype='uint8').transpose()
 
     def show_map(self):
         """
@@ -44,8 +54,8 @@ class ShowThePath(object):
         :return:
         :raise: 此处将地图和散点绘制在一张图之后，散点只能选整数，尚未分析出原因
         """
-        _x = np.arange(0, 100, 0.2)
-        _y = np.arange(0, 100, 0.2)
+        _x = np.arange(0, 500, 1)
+        _y = np.arange(0, 500, 1)
         _z = np.loadtxt('/Users/xds/PycharmProjects'
                         '/pybas/map/scenario_a%s/map.txt' % self.map_id)
         _trace0 = go.Surface(

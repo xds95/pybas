@@ -32,38 +32,51 @@ def fun(chromosome, dim=None, *, po_st=None, po_en=None, map_Can=None):
     # 添加障碍物是否碰撞的判断
     y = np.random.rand(dim)
     y[0:dim] = chromosome
-    length_y = pow(500 / dim, 2)
-    if all(y >= 0) and all(y <= 500):
-        fitness = math.sqrt(pow(y[0] - po_st, 2) + 1)
-        for i in range(0, dim):
-            # pos_ceil = np.ceil(y[i]).astype(int)
-            # pos_floor = np.floor(y[i]).astype(int)
-            # if map_Can[pos_ceil, np.ceil(i*500/dim).astype(int)] > 80 or \
-            #         map_Can[pos_floor, np.floor(i*500/dim).astype(int)] > 80:
-            if map_Can[i*500//dim, y[i].astype(int)] > 100:
-                fitness += 500
+    # length_y = pow(500 / dim, 2)
+    # if all(y >= 0) and all(y <= 500):
+    # fitness = math.sqrt(pow(y[0] - po_st[1], 2) + pow(y[1]-po_st[2]+pow(y[2]-po_st[3])))
+    fitness = 0
+    for i in range(0, dim // 3):
+        # i represent points' position, and dim+1//3 must be positive integer
+        # pos_ceil = np.ceil(y[i]).astype(int)
+        # pos_floor = np.floor(y[i]).astype(int)
+        # if map_Can[pos_ceil, np.ceil(i*500/dim).astype(int)] > 80 or \
+        #         map_Can[pos_floor, np.floor(i*500/dim).astype(int)] > 80:
+        j = 3 * i
+        if y[j + 1] > 500 or y[j + 1] < 0 or y[j] > 500 or y[j] < 0:
+            fitness += 500
+        elif y[j + 2] < map_Can[y[j].astype(int), y[j + 1].astype(int)] or y[j + 2] > 120:
+            fitness += 500
 
-            if i == 0:
-                fitness += math.sqrt(pow(y[i] - po_st, 2) + length_y)
-            elif i == dim-1:
-                fitness += math.sqrt(pow(po_en - y[dim-1], 2) + length_y)
-            else:
-                fitness += math.sqrt(pow(y[i] - y[i-1], 2) + length_y)
-        return fitness
-    else:
-        # 边界限制
-        c = 50 + sum(0 < i < 500 for i in y) * 500
-        return c  # 返回一个达不到的小/大值
+        if i == 0:
+            fitness += math.sqrt(pow(y[j] - po_st[0], 2) + pow(y[j + 1] - po_st[1], 2) + pow(y[j + 2] - po_st[2], 2))
+        else:
+            fitness += math.sqrt(pow(y[j] - y[j - 3], 2) + pow(y[j + 1] - y[j - 2], 2) + pow(y[j + 2] - y[j - 1], 2))
 
+        if i == dim // 3 - 1:
+            fitness += math.sqrt(pow(y[j] - po_en[0], 2) + pow(y[j + 1] - po_en[1], 2) + pow(y[j + 2] - po_en[2], 2))
+
+    return fitness
+    # else:
+    #     # 边界限制
+    #     c = 500
+    #     for i in y:
+    #         if (i+1)//3 == 0 and 0 < y[i] < 500:
+    #             c += 500
+    #     # c = 1000
+    #     return c  # 返回一个达不到的小/大值
 
 
 map_id = 1
 map_Can = np.loadtxt('/Users/xds/PycharmProjects/pybas/map'
                      '/scenario_a%s/map.txt' % map_id, dtype=int)
-bas = RBAS(fitness_function=fun, dim=20, steps=400, eta=0.9976, bound=[100, 500],
-           step0=25, fitness_value=np.inf, po_st=400, po_en=400, map_Can=map_Can)
+bas = RBAS(fitness_function=fun, dim=36, steps=50000, eta=0.999951, bound=[100, 500],
+           step0=30, fitness_value=np.inf, po_st=[400, 0, 50], po_en=[0, 500, 0],
+           map_Can=map_Can)
 bas.run()
-print(bas.gbest)
+print(bas.gbest_chromosome)
+print(bas.gbest_fitness_value)
 
+# bas.fitness(chromosome=bas.gbest_chromosome)
 stp = STP(1, bas)
 stp.show_map()

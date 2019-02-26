@@ -10,7 +10,8 @@
 
 from slapy.swarm.bas import BASEngine
 import numpy as np
-from copy import deepcopy
+# from copy import deepcopy
+import copy
 
 npr = np.random
 
@@ -47,8 +48,11 @@ class RBASEngine(BASEngine):
         xright = self.chromosome - dir * d0
         fright = self.fitness_function(xright, self.dim, po_st=self.po_st, po_en=self.po_en, map_Can=self.map_Can)
 
-        if self.fitness() < self.gbest.fitness_value:
-            self.gbest = deepcopy(self)
+        if self.fitness() < self.gbest_fitness_value:
+            # self.gbest = deepcopy(self)
+            # print(self.fitness_value)
+            self.gbest_fitness_value = copy.copy(self.fitness_value)
+            self.gbest_chromosome = copy.copy(self.chromosome)
         self.chromosome -= self.step * dir * np.sign(fleft - fright)
         # else:
         #     if self.step * npr.rand() < self.step:
