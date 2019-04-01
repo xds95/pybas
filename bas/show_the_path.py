@@ -57,7 +57,7 @@ class ShowThePath(object):
         _x = np.arange(0, 500, 1)
         _y = np.arange(0, 500, 1)
         _z = np.loadtxt('/Users/xds/PycharmProjects'
-                        '/pybas/map/scenario_a%s/map.txt' % self.map_id)
+                        '/pybas/map/scenario_a%s/map.txt' % self.map_id).T
         _trace0 = go.Surface(
             colorscale='Earth',
             x=_x,

@@ -52,7 +52,8 @@ class RBASEngine(BASEngine):
             # self.gbest = deepcopy(self)
             # print(self.fitness_value)
             self.gbest_fitness_value = copy.copy(self.fitness_value)
-            self.gbest_chromosome = copy.copy(self.chromosome)
+            self.gbest_chromosome = copy.copy(np.hstack((np.reshape(self.xnums, (self.dim//2, 1)),
+                                                         np.reshape(self.chromosome, (self.dim//2, 2)))).ravel())
         self.chromosome -= self.step * dir * np.sign(fleft - fright)
         # else:
         #     if self.step * npr.rand() < self.step:

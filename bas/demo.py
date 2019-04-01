@@ -30,13 +30,18 @@ def fun(chromosome, dim=None, *, po_st=None, po_en=None, map_Can=None):
     # TODO:
     # 完成剩余参数的添加
     # 添加障碍物是否碰撞的判断
-    y = np.random.rand(dim)
-    y[0:dim] = chromosome
+    # 随机生成的
+    y = np.random.rand(dim*3//2)
+    # chromosome = np.hstack((np.reshape(self.xnums, (self.dim // 2, 1)),
+    #                         np.reshape(self.chromosome, (self.dim // 2, 2)))).ravel()
+    xnums = np.arange(po_st[0], po_en[0], (po_en[0] - po_st[0]) / (dim / 2))
+    chromosome = np.hstack((np.reshape(xnums, (dim // 2, 1)), np.reshape(chromosome, (dim // 2, 2)))).ravel()
+    y[0:dim*3//2] = chromosome
     # length_y = pow(500 / dim, 2)
     # if all(y >= 0) and all(y <= 500):
     # fitness = math.sqrt(pow(y[0] - po_st[1], 2) + pow(y[1]-po_st[2]+pow(y[2]-po_st[3])))
     fitness = 0
-    for i in range(0, dim // 3):
+    for i in range(0, dim*3//2 // 3):
         # i represent points' position, and dim+1//3 must be positive integer
         # pos_ceil = np.ceil(y[i]).astype(int)
         # pos_floor = np.floor(y[i]).astype(int)
@@ -45,7 +50,8 @@ def fun(chromosome, dim=None, *, po_st=None, po_en=None, map_Can=None):
         j = 3 * i
         if y[j + 1] > 500 or y[j + 1] < 0 or y[j] > 500 or y[j] < 0:
             fitness += 500
-        elif y[j + 2] < map_Can[y[j].astype(int), y[j + 1].astype(int)] or y[j + 2] > 120:
+        elif y[j + 2] < map_Can[y[j].astype(int), y[j + 1].astype(int)] or y[j + 2] > 60:
+        # elif y[j + 2] < 120 or y[j + 2] > 200:
             fitness += 500
 
         if i == 0:
@@ -57,25 +63,22 @@ def fun(chromosome, dim=None, *, po_st=None, po_en=None, map_Can=None):
             fitness += math.sqrt(pow(y[j] - po_en[0], 2) + pow(y[j + 1] - po_en[1], 2) + pow(y[j + 2] - po_en[2], 2))
 
     return fitness
-    # else:
-    #     # 边界限制
-    #     c = 500
-    #     for i in y:
-    #         if (i+1)//3 == 0 and 0 < y[i] < 500:
-    #             c += 500
-    #     # c = 1000
-    #     return c  # 返回一个达不到的小/大值
 
-
+# 地图编号
 map_id = 1
-map_Can = np.loadtxt('/Users/xds/PycharmProjects/pybas/map'
-                     '/scenario_a%s/map.txt' % map_id, dtype=int)
-bas = RBAS(fitness_function=fun, dim=36, steps=50000, eta=0.999951, bound=[100, 500],
+# load地图
+map_Can = np.loadtxt('../map/scenario_a%s/map.txt' % map_id, dtype=int)
+# 对bas进行赋值
+bas = RBAS(fitness_function=fun, dim=24, steps=50000, eta=0.999951, bound=[100, 500],
            step0=30, fitness_value=np.inf, po_st=[400, 0, 50], po_en=[0, 500, 0],
            map_Can=map_Can)
+# 运行rum
 bas.run()
-print(bas.gbest_chromosome)
+# 打印
+print(np.reshape(bas.gbest_chromosome, (bas.dim // 2, 3)))
 print(bas.gbest_fitness_value)
+ch = np.reshape(bas.gbest_chromosome.astype(int), (bas.dim//2, 3))
+print(map_Can[ch[..., 0], ch[..., 1]])
 
 # bas.fitness(chromosome=bas.gbest_chromosome)
 stp = STP(1, bas)
